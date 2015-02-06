@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Ugly stuff to get base dir
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+if [ $# -lt 1 ];
+    then echo "Usage: nrk-download url"
+    exit
+fi
+
+# Parse the feed
+data=`php $DIR/nrk-parser.php $1`
+
+# Split the parser response by whitespace
+IFS=" " read key stream subtitle <<< "$data"
+
+# Download the subtitles
+subtitleResult=`php $DIR/nrk-subtitle-downloader.php $key $subtitle`
+
+# Check if subtitle was found
+if [ "$subtitle" != "" ]; then
+    # Download stream and add subtitle
+    avconv -i "$stream" -i "$key.nb.srt" -codec copy "$key.mkv"
+else
+    # Download stream
+    avconv -i $stream -codec copy $key.mkv
+fi
+
+# Remove srt file
+rm $key.nb.srt
+
+ls -l $key*
