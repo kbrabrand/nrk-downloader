@@ -23,13 +23,21 @@ IFS=" " read key stream subtitle <<< "$data"
 # Download the subtitles
 subtitleResult=`php $DIR/nrk-subtitle-downloader.php $key $subtitle`
 
+convertStream() {
+    if hash aconv 2>/dev/null; then
+        aconv "$@"
+    else
+        ffmpeg "$@"
+    fi
+}
+
 # Check if subtitle was found
 if [ "$subtitle" != "" ]; then
     # Download stream and add subtitle
-    avconv -i "$stream" -i "$key.nb.srt" -codec copy "$key.mkv"
+    convertStream -i "$stream" -i "$key.nb.srt" -codec copy "$key.mkv"
 else
     # Download stream
-    avconv -i $stream -codec copy $key.mkv
+    convertStream -i $stream -codec copy $key.mkv
 fi
 
 # Remove srt file
