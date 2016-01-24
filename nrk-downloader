@@ -31,14 +31,14 @@ convertStream() {
     fi
 }
 
-subFlags = ""
-
 # Check if subtitle was found
 if [ "$subtitle" != "" ]; then
-    subFlags = "-i \"$key.nb.srt\" -scodec srt"
+    # Download stream and add subtitle
+    convertStream -i $stream -i "$key.nb.srt" -scodec srt -map 0:v -map 0:a -c:v copy -flags global_header $key.mkv
+else
+    # Download stream
+    convertStream -i $stream -map 0:v -map 0:a -c:v copy -flags global_header $key.mkv
 fi
-
-convertStream -i $stream $subFlags -map 0:v -map 0:a -c:v copy -flags global_header $key.mkv
 
 # Remove srt file
 rm $key.nb.srt
