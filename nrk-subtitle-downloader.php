@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('Europe/Oslo');
+
 // Too few arguments
 if (count($argv) < 3) {
     exit;

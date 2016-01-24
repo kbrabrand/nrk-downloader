@@ -53,7 +53,7 @@ foreach ($m3u8Lines as $index => $line) {
 
     if ($bandwidthMatch && $bandwidthMatch[1] > $maxBandwidth) {
         $maxBandwidth = $bandwidthMatch[1];
-        $streamLink    = $m3u8Lines[$index + 1];
+        $streamLink = $m3u8Lines[$index + 1];
     }
 }
 
