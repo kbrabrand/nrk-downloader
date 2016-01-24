@@ -5,7 +5,7 @@ Stream downloader for NRK depending on `PHP`, `bash` and `aconv`/`ffmpeg`. Will 
 Install `ffmpeg`. If you're on a mac, you'll need to install [Homebrew](http://brew.sh/) first, and then install ffmpeg (shown below). If you're on some linux distribution you hopefully know what to do. If you're on Windows I'm sorry..
 
 ```sh
-brew install ffmpeg
+$ brew install ffmpeg
 ```
 
 Then `git clone` or download a [zip file](https://github.com/kbrabrand/nrk-downloader/archive/master.zip) of this repo.
