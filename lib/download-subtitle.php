@@ -17,6 +17,10 @@ if (is_file($dstFile)) {
     exit;
 }
 
+if (!is_writable($dstFile)) {
+  echo $dstFile . ' is not writeable' . PHP_EOL;
+}
+
 $output = fopen($dstFile, 'w');
 
 $subtitleXML = file_get_contents($subtitleUrl);

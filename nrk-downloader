@@ -15,13 +15,16 @@ if [ $# -lt 1 ];
 fi
 
 # Parse the feed
-data=`php $DIR/nrk-parser.php $1`
+data=`php $DIR/lib/parse-markup.php $1`
 
 # Split the parser response by whitespace
 IFS=" " read key stream subtitle <<< "$data"
 
+# Create destination folder
+createFolderResult=`php $DIR/lib/create-dst-folder.php $key`
+
 # Download the subtitles
-subtitleResult=`php $DIR/nrk-subtitle-downloader.php $key $subtitle`
+subtitleResult=`php $DIR/lib/download-subtitle.php $key $subtitle`
 
 convertStream() {
     if hash aconv 2>/dev/null; then
@@ -34,10 +37,10 @@ convertStream() {
 # Check if subtitle was found
 if [ "$subtitle" != "" ]; then
     # Download stream and add subtitle
-    convertStream -i $stream -i "$key.nb.srt" -scodec srt -map 0:v -map 0:a -c:v copy -flags global_header $key.mkv
+    convertStream -i $stream -i "$key.nb.srt" -scodec srt -map 0:v -map 0:a -map 1 -c:v copy -flags global_header $key.mkv
 else
     # Download stream
-    convertStream -i $stream -map 0:v -map 0:a -c:v copy -flags global_header $key.mkv
+    convertStream -i $stream -map 0:v -map 0:a -map 1 -c:v copy -flags global_header $key.mkv
 fi
 
 # Remove srt file
